@@ -31,7 +31,7 @@ api = tweepy.API(auth)
 
 def search_tweets():
     # devuelve un list los tweets que coincidan con el término de búsqueda.
-    tl_tweets = api.search("coronavirus", count=1000)
+    tl_tweets = api.search("coronavirus", lang='en', count=1000)
     print("found", len(tl_tweets), "tweets\n")
 
     # cada item de la lista es un objeto status, cuyos parámetros son

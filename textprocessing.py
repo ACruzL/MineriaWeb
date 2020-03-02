@@ -1,4 +1,4 @@
-# TF, IDF implementations taken from: https://janav.wordpress.com/2013/10/27/tf-idf-and-cosine-similarity/
+# TF and IDF implementations taken from: https://janav.wordpress.com/2013/10/27/tf-idf-and-cosine-similarity/
 
 from nltk.corpus import stopwords 
 from nltk.tokenize import RegexpTokenizer
@@ -8,12 +8,6 @@ regex = "\w+\'\w+|\w+"
 regex_tokenizer = RegexpTokenizer(regex)
 
 stopwords = set(stopwords.words('english'))
-
-sentence1 = "The game of life is a game of everlasting learning"
-sentence2 = "The unexamined life is not worth living"
-sentence3 = "Never stop learning"
-
-allDocuments = [sentence1, sentence2, sentence3]
 
 def term_frequency(term, document):
     normalizeDocument = document.lower().split()
@@ -31,6 +25,8 @@ def inverse_document_frequency(term, allDocuments):
         return 1.0
 
 def text_preprocessing(documents):
+    '''Función para calcular el vector de cada palabra en el contexto de su documento, y 
+    el conjunto de todos los documentos a analizar.'''
     vector_dict = dict()
     for doc in documents:
         print(doc)
@@ -54,12 +50,3 @@ def text_preprocessing(documents):
 
     print(vector_dict)
     return vector_dict
-
-
-if __name__ == '__main__':
-    text_preprocessing(allDocuments)
-
-
-
-
-    
