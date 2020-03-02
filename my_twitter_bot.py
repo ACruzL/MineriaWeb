@@ -17,6 +17,7 @@ import json
 import time, random
 from keys import *
 import tweepy
+from textprocessing import text_preprocessing
 
 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
@@ -35,10 +36,16 @@ def search_tweets():
 
     # cada item de la lista es un objeto status, cuyos parámetros son
     # accesibles como cualquier objeto
-    for tw in tl_tweets[50:]: # printeamos el texto de los 50 últimos tuits junto con sus favs
+    for tw in tl_tweets: # printeamos el texto de los 50 últimos tuits junto con sus favs
         print(tw.text, "| favs:", tw.favorite_count)
         print("\n____________________\n")
 
+    documents = []
+    for tw in tl_tweets:
+        documents.append(tw.text)
+
+    tw_dict = text_preprocessing(documents)
+    print(tw_dict)
 
 if __name__ == "__main__":
     search_tweets()
