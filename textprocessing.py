@@ -24,7 +24,7 @@ def inverse_document_frequency(term, allDocuments):
     else:
         return 1.0
 
-def text_preprocessing(documents):
+def word2vec(documents):
     '''Función para calcular el vector de cada palabra en el contexto de su documento, y 
     el conjunto de todos los documentos a analizar.'''
     vector_dict = dict()
@@ -36,7 +36,7 @@ def text_preprocessing(documents):
             if not token in stopwords:
                 print(token)
                 tf = term_frequency(token, doc)
-                idf = inverse_document_frequency(token, allDocuments)
+                idf = inverse_document_frequency(token, documents)
                 tf_idf = tf * idf
                 print("\tTF:", tf)
                 print("\tIDF:", idf)
