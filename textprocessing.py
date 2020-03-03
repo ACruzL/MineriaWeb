@@ -2,7 +2,7 @@
 
 from nltk.corpus import stopwords 
 from nltk.tokenize import RegexpTokenizer
-from math import log
+from math import log, pow, sqrt
 
 regex = "\w+\'\w+|\w+"
 regex_tokenizer = RegexpTokenizer(regex)
@@ -23,6 +23,29 @@ def inverse_document_frequency(term, allDocuments):
         return 1.0 + log(float(len(allDocuments)) / numDocumentsWithThisTerm)
     else:
         return 1.0
+
+def dot_product(vec1, vec2):
+    vec_sum = 0
+    for value1, value2 in zip(vec1, vec2):
+        vec_sum += value1[1] * value2[1]
+
+    return vec_sum
+
+def vector_module(vec1):
+    square_sum = 0
+    for value in vec1:
+        square_sum += pow(value[1], 2)
+
+    return sqrt(square_sum)
+
+def cosine_similarity(vec1, vec2):
+    dot_prod = dot_product(vec1, vec2)
+    mod1 = vector_module(vec1)
+    mod2 = vector_module(vec2)
+
+    return dot_prod / (mod1 * mod2)
+
+    
 
 def word2vec(documents):
     '''Función para calcular el vector de cada palabra en el contexto de su documento, y 
@@ -47,6 +70,4 @@ def word2vec(documents):
         vector_dict[doc] = set(aux_list)
 
         print("\n____________________\n")
-
-    print(vector_dict)
     return vector_dict

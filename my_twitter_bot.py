@@ -30,7 +30,7 @@ import json
 import time, random
 from keys import *
 import tweepy
-from textprocessing import word2vec
+from textprocessing import word2vec, cosine_similarity
 
 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
@@ -64,7 +64,12 @@ def search_tweets():
         documents.append(get_full_text(tw))
 
     tw_dict = word2vec(documents)
-    print(tw_dict)
+
+
+    vec1 = tw_dict[get_full_text(tl_tweets[0])]
+    vec2 = tw_dict[get_full_text(tl_tweets[2])]
+    
+    print(cosine_similarity(vec1, vec2))
 
 if __name__ == "__main__":
     search_tweets()
