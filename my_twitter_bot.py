@@ -69,7 +69,9 @@ def search_tweets():
     vec1 = tw_dict[get_full_text(tl_tweets[0])]
     vec2 = tw_dict[get_full_text(tl_tweets[2])]
     
-    print(cosine_similarity(vec1, vec2))
+    print("Doc1:", get_full_text(tl_tweets[0]))
+    print("Doc2:", get_full_text(tl_tweets[2]))
+    print("\nCosine similarity:", cosine_similarity(vec1, vec2))
 
 if __name__ == "__main__":
     search_tweets()
