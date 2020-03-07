@@ -52,22 +52,22 @@ def word2vec(documents):
     el conjunto de todos los documentos a analizar.'''
     vector_dict = dict()
     for doc in documents:
-        print(doc)
-        tokens = regex_tokenizer.tokenize(doc.lower())
+        # print(doc)
+        tokens = regex_tokenizer.tokenize(doc)
         aux_list = []
         for token in tokens:
-            if not token in stopwords:
-                print(token)
+            if not token.lower() in stopwords:
+                # print(token)
                 tf = term_frequency(token, doc)
                 idf = inverse_document_frequency(token, documents)
                 tf_idf = tf * idf
-                print("\tTF:", tf)
-                print("\tIDF:", idf)
-                print("\tTF * IDF:", tf_idf)
-                if not token in aux_list:
-                    aux_list.append((token, tf_idf))
+                # print("\tTF:", tf)
+                # print("\tIDF:", idf)
+                # print("\tTF * IDF:", tf_idf)
+                
+                aux_list.append((token, tf_idf))
 
         vector_dict[doc] = set(aux_list)
 
-        print("\n____________________\n")
+        # print("\n____________________\n")
     return vector_dict

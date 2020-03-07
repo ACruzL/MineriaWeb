@@ -31,6 +31,7 @@ import time, random
 from keys import *
 import tweepy
 from textprocessing import word2vec, cosine_similarity
+from k_means import k_means
 
 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
@@ -50,28 +51,25 @@ def get_full_text(status):
 
 def search_tweets():
     # devuelve un list los tweets que coincidan con el término de búsqueda.
-    tl_tweets = api.search("coronavirus", lang='en', tweet_mode='extended', count=1000)
-    print("found", len(tl_tweets), "tweets\n")
+    # tl_tweets = api.search("new horizons", lang='en', tweet_mode='extended', count=1000)
+    # print("found", len(tl_tweets), "tweets\n")
 
     # cada item de la lista es un objeto status, cuyos parámetros son
     # accesibles como cualquier objeto
-    for tw in tl_tweets: # printeamos el texto de los tuits extendidos
-        print(get_full_text(tw))
-        print("\n____________________\n")
+    # for tw in tl_tweets: # printeamos el texto de los tuits extendidos
+    #     print(get_full_text(tw))
+    #     print("\n____________________\n")
 
-    documents = []
-    for tw in tl_tweets:
-        documents.append(get_full_text(tw))
+    documents = ['hello i am good at text', 'i like to drink things in the morning', "damn that's so drink in the morning"]
+    # for tw in tl_tweets:
+    #     documents.append(get_full_text(tw))
 
     tw_dict = word2vec(documents)
-
-
-    vec1 = tw_dict[get_full_text(tl_tweets[0])]
-    vec2 = tw_dict[get_full_text(tl_tweets[2])]
     
-    print("Doc1:", get_full_text(tl_tweets[0]))
-    print("Doc2:", get_full_text(tl_tweets[2]))
-    print("\nCosine similarity:", cosine_similarity(vec1, vec2))
+    k_groups = k_means(tw_dict, 2)
+    for i in range(len(k_groups)):
+        print("Group", i)
+        print("\t", k_groups[i])
 
 if __name__ == "__main__":
     search_tweets()
