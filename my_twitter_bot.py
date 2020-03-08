@@ -32,6 +32,7 @@ from keys import *
 import tweepy
 from textprocessing import word2vec, cosine_similarity
 from k_means import k_means
+from pprint import pprint
 
 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
@@ -42,7 +43,6 @@ api = tweepy.API(auth)
     # "no existe, no puede hacerte daño", 
     # "you vs the guy she told you not to worry about", 
 
-
 def get_full_text(status):
     if 'retweeted_status' in status._json:
         return status._json['retweeted_status']['full_text']
@@ -51,25 +51,24 @@ def get_full_text(status):
 
 def search_tweets():
     # devuelve un list los tweets que coincidan con el término de búsqueda.
-    # tl_tweets = api.search("new horizons", lang='en', tweet_mode='extended', count=1000)
-    # print("found", len(tl_tweets), "tweets\n")
+    tl_tweets = api.search("new horizons", lang='en', tweet_mode='extended', count=1000)
+    print("found", len(tl_tweets), "tweets\n")
 
-    # cada item de la lista es un objeto status, cuyos parámetros son
-    # accesibles como cualquier objeto
-    # for tw in tl_tweets: # printeamos el texto de los tuits extendidos
-    #     print(get_full_text(tw))
-    #     print("\n____________________\n")
-
-    documents = ['hello i am good at text', 'i like to drink things in the morning', "damn that's so drink in the morning"]
+    documents = ["hello how are you i'm fine thanks",
+                 'today we are making k means algorithm',
+                 'the means of the alrgorithm are rude',
+                 "thanks to you i'm fine",
+                 'he did say hello to me yesterday',
+                 'i have a fine mouse to work with']
     # for tw in tl_tweets:
     #     documents.append(get_full_text(tw))
 
     tw_dict = word2vec(documents)
     
     k_groups = k_means(tw_dict, 2)
-    for i in range(len(k_groups)):
-        print("Group", i)
-        print("\t", k_groups[i])
+    for g in k_groups:
+        print("GROUP")
+        pprint(g)
 
 if __name__ == "__main__":
     search_tweets()
