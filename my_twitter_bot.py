@@ -51,24 +51,25 @@ def get_full_text(status):
 
 def search_tweets():
     # devuelve un list los tweets que coincidan con el término de búsqueda.
-    tl_tweets = api.search("new horizons", lang='en', tweet_mode='extended', count=1000)
-    print("found", len(tl_tweets), "tweets\n")
+    # tl_tweets = api.search("new horizons", lang='en', tweet_mode='extended', count=1000)
+    # print("found", len(tl_tweets), "tweets\n")
 
     documents = ["hello how are you i'm fine thanks",
-                 'today we are making k means algorithm',
-                 'the means of the alrgorithm are rude',
+                 'we are making k means algorithm',
+                 'the means of the algorithm are in the making',
                  "thanks to you i'm fine",
-                 'he did say hello to me yesterday',
-                 'i have a fine mouse to work with']
+                 'he did say hello to me today thanks fine',
+                 'i have a fine thanks to work with today']
     # for tw in tl_tweets:
     #     documents.append(get_full_text(tw))
 
     tw_dict = word2vec(documents)
-    
-    k_groups = k_means(tw_dict, 2)
-    for g in k_groups:
-        print("GROUP")
-        pprint(g)
+    # pprint(tw_dict, compact=True)
+
+    k_groups = k_means(tw_dict, 3)
+    # for g in k_groups:
+    #     print("GROUP")
+    #     pprint(g)
 
 if __name__ == "__main__":
     search_tweets()
