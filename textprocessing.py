@@ -3,6 +3,7 @@
 from nltk.corpus import stopwords 
 from nltk.tokenize import RegexpTokenizer
 from math import log, pow, sqrt
+import numpy as np
 
 regex = "\w+\'\w+|\w+"
 regex_tokenizer = RegexpTokenizer(regex)
@@ -25,16 +26,12 @@ def inverse_document_frequency(term, allDocuments):
         return 1.0
 
 def dot_product(vec1, vec2):
-    vec_sum = 0
-    for value1, value2 in zip(vec1, vec2):
-        vec_sum += value1[1] * value2[1]
-
-    return vec_sum
+    return np.sum(np.array(vec1) * np.array(vec2))
 
 def vector_module(vec1):
     square_sum = 0
     for value in vec1:
-        square_sum += pow(value[1], 2)
+        square_sum += pow(value, 2)
 
     return sqrt(square_sum)
 
@@ -46,28 +43,38 @@ def cosine_similarity(vec1, vec2):
     return dot_prod / (mod1 * mod2)
 
     
+import scipy.sparse as sp
 
 def word2vec(documents):
     '''Función para calcular el vector de cada palabra en el contexto de su documento, y 
     el conjunto de todos los documentos a analizar.'''
-    vector_dict = dict()
+    dictionary = dict()
+    document_list = []
+    index = 0
     for doc in documents:
-        print(doc)
-        tokens = regex_tokenizer.tokenize(doc.lower())
         aux_list = []
+        tokens = regex_tokenizer.tokenize(doc.lower())
         for token in tokens:
-            if not token in stopwords:
-                print(token)
-                tf = term_frequency(token, doc)
-                idf = inverse_document_frequency(token, documents)
-                tf_idf = tf * idf
-                print("\tTF:", tf)
-                print("\tIDF:", idf)
-                print("\tTF * IDF:", tf_idf)
-                if not token in aux_list:
-                    aux_list.append((token, tf_idf))
+            if token not in stopwords:
+                if token not in dictionary:
+                    dictionary[token] = index
+                    aux_list.append(index)
+                    index += 1
+                else:
+                    aux_list.append(dictionary[token])
 
-        vector_dict[doc] = set(aux_list)
+        document_list.append(aux_list)
 
-        print("\n____________________\n")
-    return vector_dict
+    sparse_matrix = sp.lil_matrix((len(documents),len(dictionary)), dtype=int)
+    for row_index, col_indices in enumerate(document_list):
+        sparse_matrix[row_index, col_indices] = 1
+
+    sparse_matrix = sparse_matrix.toarray()
+
+    return sparse_matrix
+
+list = ["hola me llamo alex","aa patata hola"]
+
+sparse_matrix = word2vec(list)
+
+print(cosine_similarity(sparse_matrix[0],sparse_matrix[1]))

@@ -31,6 +31,10 @@ import time, random
 from keys import *
 import tweepy
 from textprocessing import word2vec, cosine_similarity
+from gensim.models.doc2vec import Doc2Vec, TaggedDocument
+from nltk.tokenize import word_tokenize
+import re
+import pickle
 
 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
@@ -48,30 +52,21 @@ def get_full_text(status):
     else:
         return status.full_text
 
-def search_tweets():
+def search_tweets(words):
     # devuelve un list los tweets que coincidan con el término de búsqueda.
-    tl_tweets = api.search("coronavirus", lang='en', tweet_mode='extended', count=1000)
-    print("found", len(tl_tweets), "tweets\n")
 
-    # cada item de la lista es un objeto status, cuyos parámetros son
-    # accesibles como cualquier objeto
-    for tw in tl_tweets: # printeamos el texto de los tuits extendidos
-        print(get_full_text(tw))
-        print("\n____________________\n")
+    tweets = []
+    for word in words:
+        tl_tweets = api.search(word , lang='en', tweet_mode='extended', count=100)
+        for tweet in tl_tweets:
+            tweet = get_full_text(tweet)
+            tweet = re.sub(r'http\S+',"", tweet)
+            tweets.append(tweet)
 
-    documents = []
-    for tw in tl_tweets:
-        documents.append(get_full_text(tw))
+    pickle.dump(tweets, open( "sentences.p", "wb"))
 
-    tw_dict = word2vec(documents)
-
-
-    vec1 = tw_dict[get_full_text(tl_tweets[0])]
-    vec2 = tw_dict[get_full_text(tl_tweets[2])]
-    
-    print("Doc1:", get_full_text(tl_tweets[0]))
-    print("Doc2:", get_full_text(tl_tweets[2]))
-    print("\nCosine similarity:", cosine_similarity(vec1, vec2))
 
 if __name__ == "__main__":
-    search_tweets()
+    search_tweets(100, ["coronavirus",""])
+
+    # train_model(tweets)
