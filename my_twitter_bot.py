@@ -63,10 +63,24 @@ def search_tweets(words):
             tweet = re.sub(r'http\S+',"", tweet)
             tweets.append(tweet)
 
-    pickle.dump(tweets, open( "sentences.p", "wb"))
+
+    return tweets
+
+# def tokenize_tweets(tweets):
+#     from nltk import RegexpTokenizer
+#     tokenizer = RegexpTokenizer("\w+\'\w+|\w+")
+#     new_tweets = []
+#     for tweet in tweets:
+#         tweet_tokens = tokenizer.tokenize(tweet)
+#         tweet_tminus = [x.lower() for x in tweet_tokens]
+#         new_tweets.append(tweet_tminus)
+#     return new_tweets
 
 
-if __name__ == "__main__":
-    search_tweets(100, ["coronavirus",""])
+# if __name__ == "__main__":
+#     # search_tweets(["coronavirus"])
+#
+#     list = ["hola me llamo aLex","aa patata hola"]
+#     a = tokenize_tweets(list)
+#     print(a)
 
-    # train_model(tweets)

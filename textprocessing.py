@@ -73,8 +73,9 @@ def word2vec(documents):
 
     return sparse_matrix
 
-list = ["hola me llamo alex","aa patata hola"]
-
-sparse_matrix = word2vec(list)
-
-print(cosine_similarity(sparse_matrix[0],sparse_matrix[1]))
+# list = ["hola me llamo alex","aa patata hola"]
+#
+# sparse_matrix = word2vec(list)
+# print(sparse_matrix)
+#
+# print(cosine_similarity(sparse_matrix[0],sparse_matrix[1]))
