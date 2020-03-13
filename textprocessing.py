@@ -2,8 +2,9 @@
 
 from nltk.corpus import stopwords 
 from nltk.tokenize import RegexpTokenizer
-from math import log, pow, sqrt
+from math import log, sqrt
 import numpy as np
+import scipy.sparse as sp
 
 regex = "\w+\'\w+|\w+"
 regex_tokenizer = RegexpTokenizer(regex)
@@ -31,7 +32,7 @@ def dot_product(vec1, vec2):
 def vector_module(vec1):
     square_sum = 0
     for value in vec1:
-        square_sum += pow(value, 2)
+        square_sum += (value ** 2)
 
     return sqrt(square_sum)
 
@@ -42,8 +43,6 @@ def cosine_similarity(vec1, vec2):
 
     return dot_prod / (mod1 * mod2)
 
-    
-import scipy.sparse as sp
 
 def word2vec(documents):
     '''Función para calcular el vector de cada palabra en el contexto de su documento, y 
@@ -66,16 +65,10 @@ def word2vec(documents):
         document_list.append(aux_list)
 
     sparse_matrix = sp.lil_matrix((len(documents),len(dictionary)), dtype=int)
+    
     for row_index, col_indices in enumerate(document_list):
         sparse_matrix[row_index, col_indices] = 1
 
     sparse_matrix = sparse_matrix.toarray()
 
     return sparse_matrix
-
-# list = ["hola me llamo alex","aa patata hola"]
-#
-# sparse_matrix = word2vec(list)
-# print(sparse_matrix)
-#
-# print(cosine_similarity(sparse_matrix[0],sparse_matrix[1]))

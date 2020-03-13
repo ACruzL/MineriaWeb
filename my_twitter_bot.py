@@ -31,7 +31,6 @@ import time, random
 from keys import *
 import tweepy
 from textprocessing import word2vec, cosine_similarity
-from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 from nltk.tokenize import word_tokenize
 import re
 import pickle

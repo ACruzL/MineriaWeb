@@ -1,6 +1,7 @@
 import my_twitter_bot
 import textprocessing
 import pickle
+import os
 
 def save_tweets(tweets, filename):
     pickle.dump(tweets, open("{}.p".format(filename), "wb"))
@@ -13,7 +14,8 @@ words = ["coronavirus", "trump", "recession", "nintendo", "8m"]
 
 tweets_saved = False
 
-if tweets_saved:
+if os.path.exists('-'.join(words)+".p"):
+    print("Tweets loaded from disk")
     tweets = load_tweets('-'.join(words))
 else:
     tweets = my_twitter_bot.search_tweets(words)
@@ -21,9 +23,6 @@ else:
 
 
 sparse_matrix = textprocessing.word2vec(tweets)
-
-
-
 
 print(sparse_matrix)
 print(sparse_matrix.shape)
