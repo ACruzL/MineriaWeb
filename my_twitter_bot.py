@@ -31,8 +31,10 @@ import time, random
 from keys import *
 import tweepy
 from textprocessing import word2vec, cosine_similarity
-from k_means import k_means
-from pprint import pprint
+from gensim.models.doc2vec import Doc2Vec, TaggedDocument
+from nltk.tokenize import word_tokenize
+import re
+import pickle
 
 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
@@ -49,27 +51,35 @@ def get_full_text(status):
     else:
         return status.full_text
 
-def search_tweets():
+def search_tweets(words):
     # devuelve un list los tweets que coincidan con el término de búsqueda.
-    # tl_tweets = api.search("new horizons", lang='en', tweet_mode='extended', count=1000)
-    # print("found", len(tl_tweets), "tweets\n")
 
-    documents = ["hello how are you i'm fine thanks",
-                 'we are making k means algorithm',
-                 'the means of the algorithm are in the making',
-                 "thanks to you i'm fine",
-                 'he did say hello to me today thanks fine',
-                 'i have a fine thanks to work with today']
-    # for tw in tl_tweets:
-    #     documents.append(get_full_text(tw))
+    tweets = []
+    for word in words:
+        tl_tweets = api.search(word , lang='en', tweet_mode='extended', count=100)
+        for tweet in tl_tweets:
+            tweet = get_full_text(tweet)
+            tweet = re.sub(r'http\S+',"", tweet)
+            tweets.append(tweet)
 
-    tw_dict = word2vec(documents)
-    # pprint(tw_dict, compact=True)
 
-    k_groups = k_means(tw_dict, 3)
-    # for g in k_groups:
-    #     print("GROUP")
-    #     pprint(g)
+    return tweets
 
-if __name__ == "__main__":
-    search_tweets()
+# def tokenize_tweets(tweets):
+#     from nltk import RegexpTokenizer
+#     tokenizer = RegexpTokenizer("\w+\'\w+|\w+")
+#     new_tweets = []
+#     for tweet in tweets:
+#         tweet_tokens = tokenizer.tokenize(tweet)
+#         tweet_tminus = [x.lower() for x in tweet_tokens]
+#         new_tweets.append(tweet_tminus)
+#     return new_tweets
+
+
+# if __name__ == "__main__":
+#     # search_tweets(["coronavirus"])
+#
+#     list = ["hola me llamo aLex","aa patata hola"]
+#     a = tokenize_tweets(list)
+#     print(a)
+
