@@ -59,8 +59,7 @@ def search_tweets(words):
         for tweet in tl_tweets:
             tweet = get_full_text(tweet)
             tweet = re.sub(r'http\S+',"", tweet)
-            tweets.append(tweet)
-
+            tweets.append((tweet, word))
 
     return tweets
 

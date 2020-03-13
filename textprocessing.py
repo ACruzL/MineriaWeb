@@ -30,10 +30,7 @@ def dot_product(vec1, vec2):
     return np.sum(np.array(vec1) * np.array(vec2))
 
 def vector_module(vec1):
-    square_sum = 0
-    for value in vec1:
-        square_sum += (value ** 2)
-
+    square_sum = np.sum(np.array(vec1) ** 2)
     return sqrt(square_sum)
 
 def cosine_similarity(vec1, vec2):
@@ -52,7 +49,7 @@ def word2vec(documents):
     index = 0
     for doc in documents:
         aux_list = []
-        tokens = regex_tokenizer.tokenize(doc.lower())
+        tokens = regex_tokenizer.tokenize(doc[0].lower())
         for token in tokens:
             if token not in stopwords:
                 if token not in dictionary:

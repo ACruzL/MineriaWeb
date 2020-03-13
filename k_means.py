@@ -4,58 +4,72 @@
 import numpy as np
 import random
 from pprint import pprint
-from textprocessing import cosine_similarity, vector_module
+from textprocessing import cosine_similarity
+import copy
 
-def k_means(initial_group, k):
-    # make a list of k lists, and every list has its centroid, which is, for the first iteration,
-    # one random element of the original group
-    samples = random.sample(list(initial_group.items()), k=k)
+def k_means(sparse_matrix, k):
 
-    k_groups = [[x[0]] for x in samples]
+    # take k random rows from sparse_matrix
+    init_centroids = random.sample(list(np.arange(0, len(sparse_matrix), dtype=np.uint8)), k=k)
+    k_centroids = [[x] for x in init_centroids]
+    print(k_centroids)
+    last_round = copy.deepcopy(k_centroids)
 
-    # print(k_groups)
-    last_centroids = None
-    centroids = []
-    for set_s in k_groups:
-        temp_modules = []
-        for i in set_s:
-            temp_modules.append(vector_module(initial_group[i]))
-        centroids.append(np.mean(temp_modules))
+    while True:
+        print("iteration")
+        calculate_distances(k_centroids, sparse_matrix)     
 
-    # print(centroids)
+        last_round_vecs = get_vectors_from_indices(last_round, sparse_matrix)
+        k_centroids_vecs = get_vectors_from_indices(k_centroids, sparse_matrix)
 
+        last_round_means = calculate_nearest_to_mean(last_round_vecs, sparse_matrix)
+        mean_group_vectors = calculate_nearest_to_mean(k_centroids_vecs, sparse_matrix)
 
-    while True:  # simulando un do-while...
-        print("iteration")      
-        for item in list(initial_group.keys()):
-            mod_diff = []
-            for group, centroid in zip(k_groups, centroids):
-                representer = group[0]
-                print(representer, "////", item)
-                if not item == representer:
-                    vec = initial_group[item]
-                    mod_diff.append(abs(vector_module(vec) - centroid))
-                    
-            min_index = np.argmin(mod_diff)
-            k_groups[min_index].append(item)
-
-        last_centroids = centroids
-        centroids = []
-        pprint(k_groups)
-        for set_s in k_groups:
-            temp_modules = []
-            for i in set_s:
-                temp_modules.append(vector_module(initial_group[i]))
-            centroids.append(np.mean(temp_modules))
-
-        pprint(centroids)
-        print(np.count_nonzero(np.equal(last_centroids, centroids)))
-        if np.count_nonzero(np.equal(last_centroids, centroids)) == 0:
-            break
+        stop_condition = np.count_nonzero(np.equal(last_round_means, mean_group_vectors))
+        print(stop_condition)
+        
+        if stop_condition == k:
+            return k_centroids
+        else:
+            last_round = copy.deepcopy(k_centroids)
+            k_centroids.clear()
+            k_centroids = copy.deepcopy([[x] for x in mean_group_vectors])
 
 
 
-    return k_groups
-    # recalculate centroid have to think about it
+            
 
-    # start over i guess
+def get_vectors_from_indices(index_arr, sparse_matrix):
+    vector_array = []
+    for group in index_arr:
+        aux = []
+        for index in group:
+            aux.append(sparse_matrix[index])
+
+        vector_array.append(aux)
+
+    return vector_array
+
+
+def calculate_nearest_to_mean(centroids, sparse_matrix):
+    nearest_index = []
+    for group in centroids:
+        mean_group = np.mean(group, axis=0)
+        cosine_list = []
+        for i in range(len(sparse_matrix)):
+            cosine_list.append(1 - cosine_similarity(sparse_matrix[i], mean_group))
+
+        min_index = np.argmin(cosine_list)
+        nearest_index.append(min_index)
+    
+    return nearest_index
+    
+
+def calculate_distances(centroids, sparse_matrix):
+    for i in range(len(sparse_matrix)):
+        cosine_list = []
+        for c in range(len(centroids)):
+            cosine_list.append(1 - cosine_similarity(sparse_matrix[i], sparse_matrix[c]))
+
+        min_index = np.argmin(cosine_list)
+        centroids[min_index].append(i)
