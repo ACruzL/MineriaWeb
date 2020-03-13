@@ -31,7 +31,6 @@ import time, random
 from keys import *
 import tweepy
 from textprocessing import word2vec, cosine_similarity
-from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 from nltk.tokenize import word_tokenize
 import re
 import pickle
@@ -44,7 +43,6 @@ api = tweepy.API(auth)
     # "oh to be", 
     # "no existe, no puede hacerte daño", 
     # "you vs the guy she told you not to worry about", 
-
 
 def get_full_text(status):
     if 'retweeted_status' in status._json:
@@ -61,8 +59,7 @@ def search_tweets(words):
         for tweet in tl_tweets:
             tweet = get_full_text(tweet)
             tweet = re.sub(r'http\S+',"", tweet)
-            tweets.append(tweet)
-
+            tweets.append((tweet, word))
 
     return tweets
 
