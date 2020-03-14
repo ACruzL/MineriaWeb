@@ -39,11 +39,6 @@ auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
 api = tweepy.API(auth)
 
-# possible text memes formats to search for: 
-    # "oh to be", 
-    # "no existe, no puede hacerte daño", 
-    # "you vs the guy she told you not to worry about", 
-
 def get_full_text(status):
     if 'retweeted_status' in status._json:
         return status._json['retweeted_status']['full_text']
@@ -62,22 +57,3 @@ def search_tweets(words):
             tweets.append((tweet, word))
 
     return tweets
-
-# def tokenize_tweets(tweets):
-#     from nltk import RegexpTokenizer
-#     tokenizer = RegexpTokenizer("\w+\'\w+|\w+")
-#     new_tweets = []
-#     for tweet in tweets:
-#         tweet_tokens = tokenizer.tokenize(tweet)
-#         tweet_tminus = [x.lower() for x in tweet_tokens]
-#         new_tweets.append(tweet_tminus)
-#     return new_tweets
-
-
-# if __name__ == "__main__":
-#     # search_tweets(["coronavirus"])
-#
-#     list = ["hola me llamo aLex","aa patata hola"]
-#     a = tokenize_tweets(list)
-#     print(a)
-
