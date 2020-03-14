@@ -30,8 +30,6 @@ import json
 import time, random
 from keys import *
 import tweepy
-from textprocessing import word2vec, cosine_similarity
-from nltk.tokenize import word_tokenize
 import re
 import pickle
 

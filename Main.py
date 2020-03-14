@@ -1,10 +1,10 @@
-import my_twitter_bot
+import twitterAPI
 import textprocessing
 import pickle
 import os
-import k_means
 import random
 from pprint import pprint
+import ClusteringAlgorithms
 
 def save_tweets(tweets, filename):
     pickle.dump(tweets, open("{}.p".format(filename), "wb"))
@@ -13,32 +13,17 @@ def load_tweets(filename):
     return pickle.load(open("{}.p".format(filename), "rb"))
 
 
-# words = ["coronavirus", "trump", "recession", "nintendo", "8m"]
-words = ["coronavirus"]
+words = ["coronavirus", "trump", "recession", "nintendo", "8m"]
 
-tweets_saved = True
+tweets_path = "serialized_tweets"
 
-if os.path.exists('-'.join(words)+"_v2.p"):
+if os.path.exists(os.path.join(tweets_path, '-'.join(words)+"_v2.p")):
     print("Tweets loaded from disk")
-    tweets = load_tweets('-'.join(words)+"_v2")
+    tweets = load_tweets(os.path.join(tweets_path, '-'.join(words)+"_v2"))
 else:
-    tweets = my_twitter_bot.search_tweets(words)
-    save_tweets(tweets, '-'.join(words)+"_v2")
+    tweets = twitterAPI.search_tweets(words)
+    save_tweets(tweets, os.path.join(tweets_path, '-'.join(words)+"_v2"))
 
-documents = [
-    'coronavirus haha coronavirus ayy lol el coronavirus me cago me cago',
-    'coronavirus sdflk dasdfl coronavirus asdlk as ayyyyy caca',
-    'asdlkf coronavirus ad coronavirus',
-    'asdf coronavirus coronavirus ajajjaja caca',
-    'sadfasdflkasdcoronavirus sldfasd coronavirus',
-    'fasldkf coronavirus sldkfa k coronavirus coronavirus',
-    'chochete peludo me apasiona comer chochete lo amo',
-    'chochete jaja todos los días comer chochete',
-    'chochete apasiona ajjaj chochete chochete',
-    'trump, is trump and trump alsk da trumplka',
-    'trump is a trump trump',
-    'trump trump trump trump trump'
-]
 
 random.shuffle(tweets)
 
@@ -46,9 +31,9 @@ sparse_matrix = textprocessing.word2vec(tweets)
 
 result, noise_pts = ClusteringAlgorithms.bdscan(sparse_matrix)
 
-k_groups = k_means.k_means(sparse_matrix, 5)
+# k_groups = ClusteringAlgorithms.k_means(sparse_matrix, 5)
 
-for group in k_groups:
+for group in result:
     print("\n\nGROUP\n\n")
     for index in group:
         print(index, "-->", tweets[index][1])

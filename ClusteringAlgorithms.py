@@ -4,7 +4,7 @@ import random
 from pprint import pprint
 import copy
 
-
+#                    ########## ALGORITMO BDSCAN ###########
 def bdscan(sparse_matrix, eps= 0.75 , minPts= 2):
     clusters = []
     visited = np.zeros(len(sparse_matrix))
@@ -54,7 +54,10 @@ def distance_matrix(sparse_matrix):
 
 
 
-########## ALGORITMO K MEANS ###########
+
+
+
+#                    ########## ALGORITMO K MEANS ###########
 # https://janav.wordpress.com/2013/10/27/tf-idf-and-cosine-similarity/
 # https://nlp.stanford.edu/IR-book/html/htmledition/dot-products-1.html#eqn:cosine
 
@@ -123,3 +126,11 @@ def calculate_distances(centroids, sparse_matrix):
         centroids[min_index].append(i)
 
 
+
+
+
+
+
+
+
+#                    ########## ALGORITMO K MEANS ++ ###########
