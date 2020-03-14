@@ -31,9 +31,11 @@ sparse_matrix = textprocessing.word2vec(tweets)
 
 result, noise_pts = ClusteringAlgorithms.bdscan(sparse_matrix)
 
-# k_groups = ClusteringAlgorithms.k_means(sparse_matrix, 5)
+k_groups = ClusteringAlgorithms.k_means(sparse_matrix, 5)
 
-for group in result:
+k_plus_plus = ClusteringAlgorithms.k_means_plus_plus(sparse_matrix, 5)
+
+for group in k_plus_plus:
     print("\n\nGROUP\n\n")
     for index in group:
         print(index, "-->", tweets[index][1])

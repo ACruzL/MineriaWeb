@@ -3,6 +3,7 @@ from textprocessing import cosine_similarity
 import random
 from pprint import pprint
 import copy
+from sklearn.preprocessing import normalize
 
 #                    ########## ALGORITMO BDSCAN ###########
 def bdscan(sparse_matrix, eps= 0.75 , minPts= 2):
@@ -134,3 +135,69 @@ def calculate_distances(centroids, sparse_matrix):
 
 
 #                    ########## ALGORITMO K MEANS ++ ###########
+def k_means_plus_plus(sparse_matrix, k):
+    # elegir un primer punto aleatorio
+    init_centroids = [random.choice(list(np.arange(0, len(sparse_matrix), dtype=np.uint8)))]
+
+    for i in range(k):
+        # calcular dsitancia de cada punto x respecto a dicho centroide
+        distance_to_centroids = calculate_distances_plus_plus(init_centroids, sparse_matrix)
+
+        # normalizar vector de distancias y pasarlo a RANDOM.CHOICE para elegir nuevo centroide
+        index_list = [d[0] for d in distance_to_centroids]
+        weight_list = [d[1]**2 for d in distance_to_centroids]
+        weight_list = [float(x)/max(weight_list) for x in weight_list]
+
+        next_centroid = random.choices(index_list, weights=weight_list, k=1)[0]
+        init_centroids.append(next_centroid)
+
+    # take k random rows from sparse_matrix
+    k_centroids = [[x] for x in init_centroids]
+    print(k_centroids)
+    last_round = copy.deepcopy(k_centroids)
+
+    while True:
+        print("iteration")
+        calculate_distances(k_centroids, sparse_matrix)     
+
+        last_round_vecs = get_vectors_from_indices(last_round, sparse_matrix)
+        k_centroids_vecs = get_vectors_from_indices(k_centroids, sparse_matrix)
+
+        last_round_means = calculate_nearest_to_mean(last_round_vecs, sparse_matrix)
+        mean_group_vectors = calculate_nearest_to_mean(k_centroids_vecs, sparse_matrix)
+
+        stop_condition = np.count_nonzero(np.equal(last_round_means, mean_group_vectors))
+        print(stop_condition)
+        
+        if stop_condition == k:
+            return k_centroids
+        else:
+            last_round = copy.deepcopy(k_centroids)
+            k_centroids.clear()
+            k_centroids = copy.deepcopy([[x] for x in mean_group_vectors])
+
+def calculate_distances_plus_plus(centroids, sparse_matrix):
+    cosine_list = []
+    for i in range(len(sparse_matrix)):
+        aux = []
+        for c in range(len(centroids)):
+            if not np.array_equal(sparse_matrix[i], sparse_matrix[c]):
+                aux.append(1 - cosine_similarity(sparse_matrix[i], sparse_matrix[c]))
+    
+        if len(aux) > 0:
+            min_index = np.argmin(aux)
+            cosine_list.append((i, aux[min_index]))
+
+    return cosine_list
+
+
+
+
+
+
+
+
+
+
+
+
