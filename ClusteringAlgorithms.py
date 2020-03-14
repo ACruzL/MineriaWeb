@@ -121,7 +121,8 @@ def calculate_distances(centroids, sparse_matrix):
     for i in range(len(sparse_matrix)):
         cosine_list = []
         for c in range(len(centroids)):
-            cosine_list.append(1 - cosine_similarity(sparse_matrix[i], sparse_matrix[c]))
+            if not np.array_equal(sparse_matrix[i], sparse_matrix[c]):
+                cosine_list.append(1 - cosine_similarity(sparse_matrix[i], sparse_matrix[c]))
 
         min_index = np.argmin(cosine_list)
         centroids[min_index].append(i)
@@ -139,7 +140,7 @@ def k_means_plus_plus(sparse_matrix, k):
     # elegir un primer punto aleatorio
     init_centroids = [random.choice(list(np.arange(0, len(sparse_matrix), dtype=np.uint8)))]
 
-    for i in range(k):
+    for i in range(k-1):
         # calcular dsitancia de cada punto x respecto a dicho centroide
         distance_to_centroids = calculate_distances_plus_plus(init_centroids, sparse_matrix)
 
