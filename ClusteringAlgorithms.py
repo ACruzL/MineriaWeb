@@ -3,7 +3,6 @@ from textprocessing import cosine_similarity
 import random
 from pprint import pprint
 import copy
-from sklearn.preprocessing import normalize
 
 #                    ########## ALGORITMO BDSCAN ###########
 def bdscan(sparse_matrix, eps= 0.75 , minPts= 2):
