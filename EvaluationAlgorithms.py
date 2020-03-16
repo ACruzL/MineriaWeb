@@ -1,6 +1,8 @@
 import numpy as np
+import math
+from multiprocessing.dummy import Pool
 
-def randIndex(clusters, tweets, classes, tweets_per_class=100):
+def confusionMatrix(clusters, tweets, classes, tweets_per_class):
     numTweets = len(tweets)
     class_dict = {k: v for v, k in enumerate(classes)}
     total_true_positives = 0
@@ -36,11 +38,69 @@ def randIndex(clusters, tweets, classes, tweets_per_class=100):
 
     total_true_negatives = num_pairs - total_true_positives - total_false_negatives - total_false_positives
 
-    print("--------------------------------")
-    print("RandIndex: ",total_true_positives, total_false_negatives, total_true_negatives, total_false_positives)
-    print("--------------------------------")
+    return {"true_positives":   total_true_positives,
+            "false_positives":  total_false_positives,
+            "false_negatives":  total_false_negatives,
+            "true_negatives":   total_true_negatives}
 
-    rand_score = (total_true_negatives + total_true_positives) / num_pairs
+def precision_recall(confusion_dict):
+
+    precision = confusion_dict["true_positives"]/(confusion_dict["true_positives"] + confusion_dict["false_positives"])
+
+    recall = confusion_dict["true_positives"]/(confusion_dict["true_positives"] + confusion_dict["false_negatives"])
+
+    return precision, recall
+
+def randIndex(confusion_dict, total_pairs):
+
+    rand_score = (confusion_dict["true_negatives"] + confusion_dict["true_positives"]) / total_pairs
 
     return rand_score
+
+def fowlkesMallowsScore(precision, recall):
+
+    return math.sqrt(precision*recall)
+
+def silhouetteScore(clusters, distance_matrix):
+    def elementSilhouette(element, num_cluster):
+        inside_similarity = 0
+        outside_similarity = 0
+        count = 0
+        for num_cluster_aux in range(len(clusters)):
+            if num_cluster == num_cluster_aux:
+                for element_aux in clusters[num_cluster_aux]:
+                    inside_similarity += distance_matrix[element][element_aux]
+                inside_similarity /= (len(clusters[num_cluster_aux]) + 1)
+            else:
+                for element_aux in clusters[num_cluster_aux]:
+                    outside_similarity += distance_matrix[element][element_aux]
+                    count += 1
+                    # print(distance_matrix[element][element_aux], element, element_aux)
+        
+        outside_similarity /= count
+        silhouette = (outside_similarity - inside_similarity)/ max(outside_similarity, inside_similarity)
+        return silhouette
+
+    element_row = [(a, x) for x in range(len(clusters)) for a in clusters[x]]
+    with Pool() as pool:
+        silhouette_results = pool.starmap(elementSilhouette, element_row)
+
+    return np.mean(silhouette_results)
+
+
+def evaluate(clusters, tweets, classes, distance_matrix, tweets_per_class=100):
+    numTweets = len(tweets)
+    num_pairs = (numTweets * (numTweets-1))/2
+
+    confusion_dict = confusionMatrix(clusters, tweets, classes, tweets_per_class)
+    result_dict = {}
+
+    #Algorithms
+    result_dict["precision"], result_dict["recall"] = precision_recall(confusion_dict)
+    result_dict["rand score"] = randIndex(confusion_dict, num_pairs)
+    result_dict["fowlkesmallows score"] = fowlkesMallowsScore(result_dict["precision"], result_dict["recall"])
+    result_dict["silhouette score"] = silhouetteScore(clusters, distance_matrix)
+
+    return result_dict
+
 
