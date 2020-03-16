@@ -46,7 +46,6 @@ def distance_matrix(sparse_matrix):
     rows = len(sparse_matrix)
     dist_matrix = np.zeros((rows, rows))
     for i in range(rows):
-        print("Row: {}".format(i))
         for j in range(i+1, rows):
             dist_matrix[i][j] = 1 - cosine_similarity(sparse_matrix[i], sparse_matrix[j])
             dist_matrix[j][i] = dist_matrix[i][j]

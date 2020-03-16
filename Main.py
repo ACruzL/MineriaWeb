@@ -31,6 +31,7 @@ else:
     save_tweets(tweets, os.path.join(tweets_path, '-'.join(words)+"_v2"))
 
 
+# random.seed('xd')
 random.shuffle(tweets)
 
 sparse_matrix = textprocessing.word2vec(tweets)
@@ -40,13 +41,37 @@ result, noise_pts = ClusteringAlgorithms.bdscan(sparse_matrix)
 k_groups = ClusteringAlgorithms.k_means(sparse_matrix, 5)
 
 k_plus_plus = ClusteringAlgorithms.k_means_plus_plus(sparse_matrix, 5)
+#
+#
+# pickle.dump(result, open("1.p", "wb"))
+# pickle.dump(k_groups, open("2.p", "wb"))
+# pickle.dump(k_plus_plus, open("3.p", "wb"))
 
+# result = pickle.load(open("1.p", "rb"))
+# k_groups = pickle.load(open("2.p", "rb"))
+# k_plus_plus = pickle.load(open("3.p", "rb"))
 
-print("\n\n\n##### BDSCAN #####\n\n\n")
-show_results(result)
-
+# print("\n\n\n##### BDSCAN #####\n\n\n")
+# show_results(result)
+#
 print("\n\n\n##### K MEANS #####\n\n\n")
 show_results(k_groups)
 
 print("\n\n\n##### K MEANS ++ #####\n\n\n")
 show_results(k_plus_plus)
+
+import EvaluationAlgorithms
+
+# pprint(result)
+
+rand_score_bdscan = EvaluationAlgorithms.randIndex(result, tweets, words)
+
+rand_score_k = EvaluationAlgorithms.randIndex(k_groups, tweets, words)
+
+rand_score_kplusplus = EvaluationAlgorithms.randIndex(k_plus_plus, tweets, words)
+
+print(rand_score_bdscan)
+
+print(rand_score_k)
+
+print(rand_score_kplusplus)
