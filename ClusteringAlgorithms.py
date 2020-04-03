@@ -45,7 +45,6 @@ def distance_matrix(sparse_matrix):
     rows = len(sparse_matrix)
     dist_matrix = np.zeros((rows, rows))
     for i in range(rows):
-        print("Row: {}".format(i))
         for j in range(i+1, rows):
             dist_matrix[i][j] = 1 - cosine_similarity(sparse_matrix[i], sparse_matrix[j])
             dist_matrix[j][i] = dist_matrix[i][j]
@@ -65,12 +64,13 @@ def k_means(sparse_matrix, k):
 
     # take k random rows from sparse_matrix
     init_centroids = random.sample(list(np.arange(0, len(sparse_matrix), dtype=np.uint8)), k=k)
+    print("K INIT CENTROIDS: ", init_centroids)
+
     k_centroids = [[x] for x in init_centroids]
-    print(k_centroids)
+
     last_round = copy.deepcopy(k_centroids)
 
     while True:
-        print("iteration")
         calculate_distances(k_centroids, sparse_matrix)     
 
         last_round_vecs = get_vectors_from_indices(last_round, sparse_matrix)
@@ -80,7 +80,6 @@ def k_means(sparse_matrix, k):
         mean_group_vectors = calculate_nearest_to_mean(k_centroids_vecs, sparse_matrix)
 
         stop_condition = np.count_nonzero(np.equal(last_round_means, mean_group_vectors))
-        print(stop_condition)
         
         if stop_condition == k:
             return k_centroids
@@ -138,6 +137,7 @@ def calculate_distances(centroids, sparse_matrix):
 def k_means_plus_plus(sparse_matrix, k):
     # elegir un primer punto aleatorio
     init_centroids = [random.choice(list(np.arange(0, len(sparse_matrix), dtype=np.uint8)))]
+    
 
     for i in range(k-1):
         # calcular dsitancia de cada punto x respecto a dicho centroide
@@ -151,13 +151,12 @@ def k_means_plus_plus(sparse_matrix, k):
         next_centroid = random.choices(index_list, weights=weight_list, k=1)[0]
         init_centroids.append(next_centroid)
 
+    print("K++ INIT CENTROIDS: ", init_centroids)
     # take k random rows from sparse_matrix
     k_centroids = [[x] for x in init_centroids]
-    print(k_centroids)
     last_round = copy.deepcopy(k_centroids)
 
     while True:
-        print("iteration")
         calculate_distances(k_centroids, sparse_matrix)     
 
         last_round_vecs = get_vectors_from_indices(last_round, sparse_matrix)
@@ -167,7 +166,6 @@ def k_means_plus_plus(sparse_matrix, k):
         mean_group_vectors = calculate_nearest_to_mean(k_centroids_vecs, sparse_matrix)
 
         stop_condition = np.count_nonzero(np.equal(last_round_means, mean_group_vectors))
-        print(stop_condition)
         
         if stop_condition == k:
             return k_centroids
