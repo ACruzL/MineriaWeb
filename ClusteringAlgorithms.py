@@ -65,6 +65,8 @@ def k_means(sparse_matrix, k):
 
     # take k random rows from sparse_matrix
     init_centroids = random.sample(list(np.arange(0, len(sparse_matrix), dtype=np.uint8)), k=k)
+    print("K INIT CENTROIDS: ", init_centroids)
+
     k_centroids = [[x] for x in init_centroids]
 
     last_round = copy.deepcopy(k_centroids)
@@ -136,6 +138,7 @@ def calculate_distances(centroids, sparse_matrix):
 def k_means_plus_plus(sparse_matrix, k):
     # elegir un primer punto aleatorio
     init_centroids = [random.choice(list(np.arange(0, len(sparse_matrix), dtype=np.uint8)))]
+    
 
     for i in range(k-1):
         # calcular dsitancia de cada punto x respecto a dicho centroide
@@ -149,6 +152,7 @@ def k_means_plus_plus(sparse_matrix, k):
         next_centroid = random.choices(index_list, weights=weight_list, k=1)[0]
         init_centroids.append(next_centroid)
 
+    print("K++ INIT CENTROIDS: ", init_centroids)
     # take k random rows from sparse_matrix
     k_centroids = [[x] for x in init_centroids]
     last_round = copy.deepcopy(k_centroids)

@@ -22,7 +22,7 @@ def show_results(index_list):
 
 def save_to_excel(result_list):    
     try:
-        workbook = xls.load_workbook(filename="output_execution.xlsx")
+        workbook = xls.load_workbook(filename="output_execution_shell.xlsx")
         print("loaded workbook from disk")
     except:
         workbook = xls.Workbook()
@@ -70,14 +70,20 @@ else:
     save_tweets(tweets, os.path.join(tweets_path, '-'.join(words)+"_v2"))
 
 
+tweet_kmeans = tweets.copy()
+tweet_k_plus = tweets.copy()
 
 random.shuffle(tweets)
+random.shuffle(tweet_kmeans)
+random.shuffle(tweet_k_plus)
 
-sparse_matrix = textprocessing.word2vec(tweets)
+sparse_matrix_bdscan = textprocessing.word2vec(tweets)
+sparse_matrix_kmeans = textprocessing.word2vec(tweet_kmeans)
+sparse_matrix_k_plus = textprocessing.word2vec(tweet_k_plus)
 
-bdscan, noise_pts = ClusteringAlgorithms.bdscan(sparse_matrix)
-k_groups = ClusteringAlgorithms.k_means(sparse_matrix, 5)
-k_plus_plus = ClusteringAlgorithms.k_means_plus_plus(sparse_matrix, 5)
+bdscan, noise_pts = ClusteringAlgorithms.bdscan(sparse_matrix_bdscan)
+k_groups = ClusteringAlgorithms.k_means(sparse_matrix_kmeans, 5)
+k_plus_plus = ClusteringAlgorithms.k_means_plus_plus(sparse_matrix_k_plus, 5)
 
 dist_matrix = ClusteringAlgorithms.distance_matrix(sparse_matrix)
 bdscan_results = EvaluationAlgorithms.evaluate(bdscan, tweets, words, dist_matrix)
