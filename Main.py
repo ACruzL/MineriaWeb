@@ -85,18 +85,29 @@ bdscan, noise_pts = ClusteringAlgorithms.bdscan(sparse_matrix_bdscan)
 k_groups = ClusteringAlgorithms.k_means(sparse_matrix_kmeans, 5)
 k_plus_plus = ClusteringAlgorithms.k_means_plus_plus(sparse_matrix_k_plus, 5)
 
-dist_matrix = ClusteringAlgorithms.distance_matrix(sparse_matrix)
-bdscan_results = EvaluationAlgorithms.evaluate(bdscan, tweets, words, dist_matrix)
-k_groups_results = EvaluationAlgorithms.evaluate(k_groups, tweets, words, dist_matrix)
-k_plus_plus_results = EvaluationAlgorithms.evaluate(k_plus_plus, tweets, words, dist_matrix)
+dist_matrix_bdscan = ClusteringAlgorithms.distance_matrix(sparse_matrix_bdscan)
+dist_matrix_kmeans = ClusteringAlgorithms.distance_matrix(sparse_matrix_kmeans)
+dist_matrix_k_plus = ClusteringAlgorithms.distance_matrix(sparse_matrix_k_plus)
+
+
+
+
+bdscan_results = EvaluationAlgorithms.evaluate(bdscan, tweets, words, dist_matrix_bdscan)
+k_groups_results = EvaluationAlgorithms.evaluate(k_groups, tweets, words, dist_matrix_kmeans)
+k_plus_plus_results = EvaluationAlgorithms.evaluate(k_plus_plus, tweets, words, dist_matrix_k_plus)
 
 print("########## BDSCAN RESULTS ##########")
 pprint(bdscan_results)
 print()
 
+
+
 print("########## K MEANS RESULTS ##########")
 pprint(k_groups_results)
 print()
+
+
+
 
 print("########## K MEANS++ RESULTS ##########")
 pprint(k_plus_plus_results)
